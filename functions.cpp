@@ -36,25 +36,28 @@ void SJF(vector<Process>& waitingProcesses)
 				i--;
 			}
 		}
-
-		int shortestIndex = 0;
-		int shortestBurst = 9999999;
-		// Pick the shortest process to run
-		for (int i = 0; i < runningProcesses.size(); i++)
+		if (!runningProcesses.empty())
 		{
-			if (runningProcesses[i].burstTime < shortestBurst)
+			int shortestIndex = 0;
+			int shortestBurst = 9999999;
+			// Pick the shortest process to run
+			for (int i = 0; i < runningProcesses.size(); i++)
+			{
+				if (runningProcesses[i].burstTime < shortestBurst)
 				{
-				shortestIndex = i;
-				shortestBurst = runningProcesses[i].burstTime;
+					shortestIndex = i;
+					shortestBurst = runningProcesses[i].burstTime;
+				}
 			}
-		}
-		// Advance time by how long the process was run for
-		currentTime += shortestBurst;
-		// Calculate waiting time for this individual process
-		waitingTime += (currentTime - (runningProcesses[shortestIndex].arrivalTime + runningProcesses[shortestIndex].burstTime));
+			// Advance time by how long the process was run for, otherwise + 1
+			currentTime += shortestBurst;
+			// Calculate waiting time for this individual process
+			waitingTime += (currentTime - (runningProcesses[shortestIndex].arrivalTime + runningProcesses[shortestIndex].burstTime));
 
-		cout << "p" << runningProcesses[shortestIndex].id << " was run for " << shortestBurst <<  endl;
-		runningProcesses.erase(runningProcesses.begin() + shortestIndex);
+			cout << "p" << runningProcesses[shortestIndex].id << " was run for " << shortestBurst << endl;
+			runningProcesses.erase(runningProcesses.begin() + shortestIndex);
+		}
+		else currentTime += 1;
 	}
 	cout << endl << "Total runtime: " << currentTime << endl;
 	cout << "Average waiting time: " << waitingTime/static_cast<double>(pCount) << endl;
